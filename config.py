@@ -8,4 +8,6 @@ mode = modes[0]
 import store_sqlite as store
 ticks = store.Store()
 
+#
+base_url = 'http://localhost:8080'
 
