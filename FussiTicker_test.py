@@ -4,13 +4,11 @@ FussiTicker_test
 '''
 
 import unittest
-import FussiTicker
-
-c = FussiTicker
+import FussiTicker as c
 
 class TestTicker(unittest.TestCase):
 	def test_match(self):
-		t = c.Ticker('HSV','BVB')
+		t = c.Ticker()
 		t.scoreHome()
 		self.assertEqual(t.home, 1)
 		
