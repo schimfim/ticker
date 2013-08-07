@@ -17,11 +17,21 @@ tpl = '''
 		%end
 		</p>
 		<form action="/{{mid}}" method="POST">
-			<input type="submit" name="home" value="Home">
-			<input type="submit" name="guest" value="Guest">
+			<input type="text" name="hteam" value="{{hteam}}">
+			<input type="submit" name="home_u" value="Home+">
+			<input type="submit" name="home_d" value="Home-">
+			<input type="submit" name="guest_u" value="Guest+">
+			<input type="submit" name="guest_d" value="Guest-">
 			<input type="submit" name="new" value="New">
+			<input type="submit" name="start" value="Start">
+			<input type="submit" name="end" value="End">
 		</form>
 	<h1>Output</h1>
+	%if running:
+		<p>Running</p>
+	%else:
+		<p>Game over</p>
+	%end
 		<p>{{home}} : {{guest}}</p>
 </body></html>
 '''
