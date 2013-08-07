@@ -7,34 +7,25 @@ from bottle import route, post, run, template, request, response, debug, error, 
 import webbrowser
 
 import FussiTicker
+from config import base_url
 
 debug(True)
 
 # Generate mailto link
 def mailto(mid):
 	base = 'mailto:?subject=Follow%20my%20Ticker'
-	body = '&body=<a>Ticker</a>'
+	body = '&body=<a>{url}/{id}</a>'.format(url=base_url, id=mid)
 	return base + body
 
-# storage utilities
-def loadMatch(mid):
-		if mid:
-			# load ticker from db
-			t = FussiTicker.load(mid)
-			return t
-
 def getFields(t=None):
-		# Returns dict with all disp. fields.
-		# Todo: defaults for ticker must be
-		# provided by ticker!
+		# Returns dict with all disp. fields
 		list = FussiTicker.dbList()
 		# Get default
-		d = dict(mid='',mids=list,mail='',
-			  home=0,guest=0,hteam='',gteam='',
-			  running=False)
+		d = dict(mid='', mids=list, mail='')
+		d.update(FussiTicker.newModel())
 		if t:
 			mid = t.id
-			tick = t.getFields()
+			tick = t.getModel()
 			mail = mailto(mid)
 			d.update(tick, mail=mail, mid=mid)
 		return d
@@ -48,7 +39,9 @@ def view_ticker(mid=''):
 		# try cookie
 		mid = request.get_cookie("FussiTicker")
 	# will be empty without cookie
-	t = loadMatch(mid)
+	t = None
+	if mid:
+		t = FussiTicker.load(mid)
 	d = getFields(t)
 	return d
 
@@ -62,16 +55,26 @@ def action(mid=''):
 		t = FussiTicker.Ticker(mid)
 		response.set_cookie("FussiTicker", mid)
 	else: 
-		t = loadMatch(mid)
+		t = FussiTicker.load(mid)
 	# process action
-	if request.forms.home:
+	if request.forms.home_u:
 		t.scoreHome()
-	elif request.forms.guest:
+	elif request.forms.home_d:
+		t.scoreHome(-1)
+	elif request.forms.guest_u:
 		t.scoreGuest()
+	elif request.forms.guest_d:
+		t.scoreGuest(-1)
 	elif request.forms.new:
-		t.reset()
+		t.new()
+	elif request.forms.start:
+		t.start()
+	elif request.forms.end:
+		t.end()
 	else:
 		logging.warning('Unknown action')
+	
+	t.setTeams(request.forms.hteam, 'na')
 	
 	FussiTicker.save(t)
 	d = getFields(t)
@@ -90,9 +93,8 @@ def error405(error):
  	return 'Unkown route'
 	
 # Run the server
-args = {'stop_when_done':'True'}
-#webbrowser.open('http://localhost:8080', *args)
-webbrowser.open('http://localhost:8080', stop_when_done=False)
+args = {'stop_when_done' : True  }
+webbrowser.open(base_url, **args)
 
 run(host='localhost', port=8080)
 
