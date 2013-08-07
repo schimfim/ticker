@@ -9,72 +9,65 @@ import random
 logging.basicConfig(level=logging.INFO)
 logging.info('ticker mode=' + mode)
 
-class Ticker(object):
-	def __init__(self, nid='123', team1='Heim', team2='Gast'):
-		self.id = nid
-		self.home = 0
-		self.guest = 0
-		self.setTeams(team1, team2)
-	
-	def setTeams(self, team1, team2):
-		self.hteam = team1
-		self.gteam = team2
-	
-	def scoreHome(self):
-		self.home += 1
-		
-	def scoreGuest(self):
-		self.guest += 1
-		
-	def reset(self):
-		self.home = 0
-		self.guest = 0
-		
-	def getFields(self):
-		d = {
-		  'mid'		: self.id,
-			'home' 	: self.home,
-			'guest' : self.guest,
-			'hteam' : self.hteam,
-			'gteam' : self.gteam
-			}
-		return d
-	
-def getDefaults():
+def newModel():
 	# Get defaults
 	d = dict(mid='', home=0, guest=0,
-	         hteam='', gteam='',
+	         hteam='Heim', gteam='Gast',
 	         running=False)
 	return d
+	
+class Ticker(object):
+	def __init__(self, nid='123', 
+	             model=None ):
+		self.id = nid
+		if model is None:
+			self.d = newModel()
+		else: 
+			self.d = model
+	
+	def setTeams(self, team1, team2):
+		self.d['hteam'] = team1
+		self.d['gteam'] = team2
+	
+	def scoreHome(self, dir=1):
+		score = self.d['home']
+		self.d['home'] = max(0, score+dir)
+		
+	def scoreGuest(self, dir=1):
+		score = self.d['guest']
+		self.d['guest'] = max(0, score+dir)
+		
+	def new(self):
+		self.d['home'] = 0
+		self.d['guest'] = 0
+		self.d['running'] = False
+	
+	def start(self):
+		self.d['running'] = True
+	
+	def end(self):
+		self.d['running'] = False
+	
+	def getModel(self):
+		return self.d
 	
 # db access
 # Requires global 'ticks' implementing
 # store.Store
 def save(t):
-		ticks.open('ticker.db')
-		d = {
-			'home' : t.home,
-			'guest' : t.guest,
-			'hteam' : t.hteam,
-			'gteam' : t.gteam
-			}
-		ticks.write(t.id, d)
-		ticks.close()
+	ticks.open('ticker.db')
+	d = t.getModel()
+	ticks.write(t.id, d)
+	ticks.close()
 	
 def load(id):
-		ticks.open('ticker.db')
-		t = Ticker(id)
-		t.id = id
-		d = ticks.read(id)
-		ticks.close()
-		if(d):
-			t.home = d['home']
-			t.guest = d['guest']
-			t.hteam = d['hteam']
-			t.gteam = d['gteam']
-			return t
-		else: 
-			return None
+	# Reads object with if from db. If not
+	# found, returns new object
+	ticks.open('ticker.db')
+	d = ticks.read(id)
+	ticks.close()
+	t = Ticker(id, d)
+	return t
 
 def dbList():
 	ticks.open('ticker.db')
