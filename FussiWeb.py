@@ -7,7 +7,7 @@ from bottle import route, post, run, template, request, response, debug, error, 
 import webbrowser
 
 import FussiTicker
-from config import base_url
+from config import base_url, ahost, aport
 
 debug(True)
 
@@ -96,5 +96,5 @@ def error405(error):
 args = {'stop_when_done' : True  }
 webbrowser.open(base_url, **args)
 
-run(host='localhost', port=8080)
+run(host=ahost, port=aport)
 
