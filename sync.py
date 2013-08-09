@@ -13,10 +13,4 @@ files = [
 	'ticker_tpl.py'
 	]
 
-'''
-files = [
-	'FussiTicker.py'
-	]
-'''
-
 RepoCLI('ticker', 'schimfim', 'Ninz2009', files)
