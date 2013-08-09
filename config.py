@@ -1,13 +1,26 @@
 # gist id=02149d46255c8da6d91d
 
 # Mode
-modes = ['iphone', 'mac', 'appengine']
-mode = modes[0]
+mode = ['iphone', 'mac', 'appengine'][0]
 
-# Storage
-import store_sqlite as store
+if mode == 'iphone':
+	# Storage
+	import store_sqlite as store
+	ahost = 'localhost'
+	aport = 8080
+elif mode == 'mac':
+	# Storage
+	import store_sqlite as store
+	ahost = 'localhost'
+	aport = 8080
+elif mode == 'appengine':
+	# Storage
+	import store_sqlite as store
+	ahost = 'localhost'
+	aport = 8080
+else: 
+	raise ValueError('Unknown mode: {}'.format(mode))
+
 ticks = store.Store()
-
-#
-base_url = 'http://localhost:8080'
+base_url = 'http://' + ahost + ':' + str(aport)
 
