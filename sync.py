@@ -10,7 +10,8 @@ files = [
 	'store_sqlite.py',
 	'store_test.py',
 	'sync.py',
-	'ticker_tpl.py'
+	'ticker_tpl.py',
+	'run_ticker'
 	]
 
 RepoCLI('ticker', 'schimfim', 'Ninz2009', files)
