@@ -1,5 +1,13 @@
-# gist id=02149d46255c8da6d91d
-
+# config.py
+ 
+# Imports
+from bottle import ConfigDict
+ 
+# Config
+#config = ConfigDict()
+#config.read("app.cfg")
+#catchall = config.getboolean('bottle', 'catchall')
+ 
 # Mode
 mode = ['iphone', 'mac', 'appengine'][0]
 
