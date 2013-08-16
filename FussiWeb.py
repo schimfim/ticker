@@ -3,13 +3,15 @@
 import logging
 logging.basicConfig(level=logging.INFO)
 
-from bottle import route, post, run, template, request, response, debug, error, view, redirect
-# import webbrowser
+from bottle import Bottle, route, post, template, request, response, debug, error, view, redirect
 
 import FussiTicker
 from config import run_opts, base_url
 
 debug(True)
+
+# App
+app = Bottle()
 
 # Generate mailto link
 def mailto(mid):
@@ -31,8 +33,8 @@ def getFields(t=None):
 		return d
 
 # View ticker or show fresh
-@route('/')
-@route('/<mid>')
+@app.route('/')
+@app.route('/<mid>')
 @view('ticker')
 def view_ticker(mid=''):
 	if not mid:
@@ -46,8 +48,8 @@ def view_ticker(mid=''):
 	return d
 
 # Update ticker
-@post('/')
-@post('/<mid>')
+@app.post('/')
+@app.post('/<mid>')
 def action(mid=''):
 	if not mid:
 		# generate new id
@@ -82,7 +84,7 @@ def action(mid=''):
 	return template('ticker', d)
 
 # Delete mid
-@route('/del/<mid>')
+@app.route('/del/<mid>')
 def delete(mid):
 	FussiTicker.delete(mid)
 	redirect('/')
@@ -91,13 +93,4 @@ def delete(mid):
 @error(405)
 def error405(error):
  	return 'Unkown route'
-	
-# Run the browser
-# This should go in a separate script!!!
-# webbrowser.open(base_url, **web_opts)
-def start():
-	run(**run_opts)
-
-# gae
-# bottle.run(server='gae') # No need for a host or port setting.
 
