@@ -11,7 +11,7 @@ files = [
 	'store_test.py',
 	'sync.py',
 	'ticker_tpl.py',
-	'run_ticker'
+	'run_ticker.py'
 	]
 
 RepoCLI('ticker', 'schimfim', 'Ninz2009', files)
