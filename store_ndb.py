@@ -1,27 +1,30 @@
 # store_ndb.py
-import sqlite3
+from google.appengine.ext import ndb
 import pickle
 
 import logging
 logging.basicConfig(level=logging.INFO)
 
-# SQLite implementation
+# Google NDB implementation
+
+class GaeShelf(ndb.Model)
+	content = ndb.StringProperty(indexed=False)
+    date = ndb.DateTimeProperty(auto_now_add=True)
+
 class Store(object):
 	def __init__(self):
 		self.db = None
 		
 	def open(self, name):
-		self.db = sqlite3.connect(name)
-		self.db.text_factory = str
+		self.db = GaeShelf()
+		# self.db.text_factory = str -> from SQLite
 		
 	def read(self, id):
-		c = self.db.cursor()
-		c.execute('select val from shelf where key=?', (id,))
-		val = c.fetchone()
-		c.close()
+		key = ndb.Key(urlsafe=id)
+		val = key.get()
 		if val:
-			logging.debug('Read:' + repr(val[0]))
-			d = pickle.loads(val[0])
+			logging.debug('Read:' + repr(val))
+			d = pickle.loads(val)
 			return d
 		else:
 			return None
@@ -43,52 +46,12 @@ class Store(object):
 		self.db.commit()
 		
 	def close(self):
-		self.db.close()
+		pass
 		
 	def list(self):
-		c = self.db.cursor()
-		c.execute('select key from shelf')
-		keys = c.fetchall()
-		c.close()
-		l = []
-		for i in keys: l.append(i[0])
-		return l
+		# Not needed for ndb
+		return ["0"]
 	
 	def delete(self, id):
 		self.db.execute('delete from shelf where key=?', (id,))
 		self.db.commit()
-
-#
-# Unit tests
-
-import unittest
-
-class TestStore(unittest.TestCase):
-	
-	def setUp(self):
-		self.s = Store()
-		self.s.open(':memory:')
-		# Create table
-		c = self.s.db.cursor()
-		c.execute('create table shelf (key text, val text)')
-		c.close()
-
-	def test_string(self):
-		# test string
-		data = 'A String'
-		self.s.write('123', data)
-		res = self.s.read('123')
-		self.assertEqual(data, res)
-
-	def test_dict(self):
-		# test dict
-		data = {'home':2, 'guest':3}
-		self.s.write('123', data)
-		res = self.s.read('123')
-		self.assertEqual(data, res)
-
-
-# Run tests
-if __name__ == '__main__':
-    unittest.main()
-
