@@ -52,10 +52,8 @@ def view_ticker(mid=''):
 @app.post('/<mid>')
 def action(mid=''):
 	if not mid:
-		# generate new id
-		mid = FussiTicker.genId()
-		t = FussiTicker.Ticker(mid)
-		response.set_cookie("FussiTicker", mid)
+		# generate new ticker
+		t = FussiTicker.Ticker()
 	else: 
 		t = FussiTicker.load(mid)
 	# process action
@@ -79,6 +77,8 @@ def action(mid=''):
 	t.setTeams(request.forms.hteam, 'na')
 	
 	FussiTicker.save(t)
+	logging.info('New id:' + str(t.id))
+	response.set_cookie("FussiTicker", t.id)
 	d = getFields(t)
 	
 	return template('ticker', d)
