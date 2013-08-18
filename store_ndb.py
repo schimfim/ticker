@@ -3,13 +3,13 @@ from google.appengine.ext import ndb
 import pickle
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 # Google NDB implementation
 
-class GaeShelf(ndb.Model)
+class GaeShelf(ndb.Model):
 	content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
+	date = ndb.DateTimeProperty(auto_now_add=True)
 
 class Store(object):
 	def __init__(self):
@@ -20,30 +20,34 @@ class Store(object):
 		# self.db.text_factory = str -> from SQLite
 		
 	def read(self, id):
+		logging.info('ENTER: read')
 		key = ndb.Key(urlsafe=id)
-		val = key.get()
-		if val:
-			logging.debug('Read:' + repr(val))
+		obj = key.get()
+		if obj:
+			val = str(obj.content)
+			logging.info('Read:' + val)
 			d = pickle.loads(val)
 			return d
 		else:
 			return None
 		
 	def write(self, id, d):
-		s = pickle.dumps(d)
-		logging.debug('Dumped:' + repr(s))
-		# already there?
-		c = self.db.cursor()
-		c.execute('select val from shelf where key=?', (id,))
-		val = c.fetchone()
-		c.close()
-		if val:
-			self.db.execute('update shelf set val=? where key=?', (s, id))	
-		else: 
-			# new entry
-			self.db.execute('insert into shelf values (?,?)', (id, s))
+		if id!= None:
+			# gen new id
+			key = ndb.Key(urlsafe=id)
+			shelf = key.get()
+			logging.info("write:shelf=" + str(shelf))
+			if shelf == None:
+				shelf = GaeShelf()
+		else:
+			shelf = GaeShelf()
 
-		self.db.commit()
+		s = pickle.dumps(d)
+		shelf.content = unicode(s)
+		id = shelf.put()
+		logging.debug('Dumped:' + repr(s))
+
+		return id.urlsafe()
 		
 	def close(self):
 		pass
