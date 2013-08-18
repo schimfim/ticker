@@ -1,6 +1,7 @@
 # store_sqlite.py
 import sqlite3
 import pickle
+import random
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -27,6 +28,9 @@ class Store(object):
 			return None
 		
 	def write(self, id, d):
+		if id==None:
+			# gen new id
+			id = self.genId()
 		s = pickle.dumps(d)
 		logging.debug('Dumped:' + repr(s))
 		# already there?
@@ -41,6 +45,7 @@ class Store(object):
 			self.db.execute('insert into shelf values (?,?)', (id, s))
 
 		self.db.commit()
+		return id
 		
 	def close(self):
 		self.db.close()
@@ -57,6 +62,14 @@ class Store(object):
 	def delete(self, id):
 		self.db.execute('delete from shelf where key=?', (id,))
 		self.db.commit()
+
+	def genId(self):
+		ids = self.list()
+		id = random.randint(1, 999999)
+		while id in ids:
+			id = random.randint(1, 999999)
+		
+		return str(id).zfill(6)
 
 #
 # Unit tests
