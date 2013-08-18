@@ -19,6 +19,7 @@ class Store(object):
 		
 	def write(self, id, d):
 		self.db[id] = d
+		return id
 		
 	def close(self):
 		self.db.close()
