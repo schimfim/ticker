@@ -4,7 +4,6 @@
 
 import logging
 from config import ticks, mode
-import random
 
 logging.basicConfig(level=logging.INFO)
 logging.info('ticker mode=' + mode)
@@ -17,7 +16,7 @@ def newModel():
 	return d
 	
 class Ticker(object):
-	def __init__(self, nid='123', 
+	def __init__(self, nid=None, 
 	             model=None ):
 		self.id = nid
 		if model is None:
@@ -54,10 +53,11 @@ class Ticker(object):
 # db access
 # Requires global 'ticks' implementing
 # store.Store
+# Sets t.id to id returned from db
 def save(t):
 	ticks.open('ticker.db')
 	d = t.getModel()
-	ticks.write(t.id, d)
+	t.id = ticks.write(t.id, d)
 	ticks.close()
 	
 def load(id):
@@ -80,13 +80,6 @@ def delete(mid):
 	ticks.delete(mid)
 	ticks.close()
 	
-def genId():
-	ids = dbList()
-	id = random.randint(1, 999999)
-	while id in ids:
-		id = random.randint(1, 999999)
-		
-	return str(id).zfill(6)
 
 ################
 # CLI
