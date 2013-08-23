@@ -5,6 +5,8 @@ tpl = '''
 			input[type=submit] {font-size:48px;}
 			input[type=text] {font-size:48px;}
 			p {font-size:48px;}
+			table { width:100%; }
+			td { border:1px solid #000; vertical-align:top; overflow:hidden; font-size:13px; font-family:Verdana,sans-serif; font-weight:bold;}
 			</style>
 		</head>
 <body>
@@ -16,15 +18,29 @@ tpl = '''
 			<a href="/del/{{si}}"> [del]</a>
 		%end
 		</p>
+		
 		<form action="/{{mid}}" method="POST">
-			<input type="text" name="hteam" value="{{hteam}}">
-			<input type="submit" name="home_u" value="Home+">
-			<input type="submit" name="home_d" value="Home-">
-			<input type="submit" name="guest_u" value="Guest+">
-			<input type="submit" name="guest_d" value="Guest-">
-			<input type="submit" name="new" value="New">
-			<input type="submit" name="start" value="Start">
-			<input type="submit" name="end" value="End">
+			<table>
+			<tr>
+			<td colspan=3><input type="text" name="hteam" value="{{hteam}}"></td>
+			</tr>
+			<tr>
+			<td><input type="submit" name="home_u" value="{{home}}"></td>
+			<td>:</td>
+			<td><input type="submit" name="home_d" value="{{guest}}"></td>
+			</tr>
+			<tr>
+			<td><input type="submit" name="guest_u" value="Guest+"></td>
+			<td></td>
+			<td><input type="submit" name="guest_d" value="Guest-"></td>
+			</tr>
+			<tr>
+			<td><input type="submit" name="new" value="New"></td>
+			<td><input type="submit" name="start" value="Start"></td>
+			<td><input type="submit" name="end" value="End"></td>
+			</tr>
+			
+			</table>
 		</form>
 	<h1>Output</h1>
 	%if running:
@@ -43,6 +59,6 @@ with open('ticker.tpl','w') as f:
 # verify
 with open('ticker.tpl') as f:
 	a = f.read()
-	print a
+#	print a
 	
 
