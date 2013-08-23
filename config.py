@@ -2,6 +2,7 @@
  
 # Imports
 from bottle import ConfigDict
+import re
  
 # Config
 #config = ConfigDict()
@@ -9,7 +10,12 @@ from bottle import ConfigDict
 #catchall = config.getboolean('bottle', 'catchall')
  
 # Mode
-mode = ['iphone', 'mac', 'appengine'][0]
+with open('ticker.cfg') as f:
+	s = f.readline()
+r = re.match('.*=([a-z]+)', s)
+mode = r.group(1)
+print 'mode=', mode
+#mode = ['iphone', 'mac', 'appengine']
 
 if mode == 'iphone':
 	import store_sqlite as store
