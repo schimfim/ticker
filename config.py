@@ -35,7 +35,7 @@ elif mode == 'appengine':
 else: 
 	raise ValueError('Unknown mode: {}'.format(mode))
 
-web_opts = {'stop_when_done' : True}
+web_opts = {'stop_when_done' : False , 'modal' : False  }
 
 # 
 ticks = store.Store()
