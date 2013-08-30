@@ -9,7 +9,7 @@ from bottle import ConfigDict
 #catchall = config.getboolean('bottle', 'catchall')
  
 # Mode
-mode = ['iphone', 'mac', 'appengine'][0]
+mode = ['iphone', 'mac', 'appengine'][2]
 
 if mode == 'iphone':
 	import store_sqlite as store
@@ -22,7 +22,7 @@ elif mode == 'mac':
 	aport = 80
 	run_opts = {'host':ahost, 'port':aport}
 elif mode == 'appengine':
-	import store_sqlite as store
+	import store_ndb as store
 	ahost = 'localhost'
 	aport = 8080
 	run_opts = {'server':'gae'}
