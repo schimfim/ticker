@@ -66,6 +66,9 @@ def load(id):
 	ticks.open('ticker.db')
 	d = ticks.read(id)
 	ticks.close()
+	if not d:
+		# Item not found
+		id = None
 	t = Ticker(id, d)
 	return t
 

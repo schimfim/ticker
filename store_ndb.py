@@ -20,12 +20,14 @@ class Store(object):
 		# self.db.text_factory = str -> from SQLite
 		
 	def read(self, id):
-		logging.info('ENTER: read')
-		key = ndb.Key(urlsafe=id)
-		obj = key.get()
+		logging.info('ENTER: read ID ' + str(id))
+		try:
+			key = ndb.Key(urlsafe=id)
+			obj = key.get()
+		except: return None
 		if obj:
 			val = str(obj.content)
-			logging.info('Read:' + val)
+			#logging.info('Read:' + val)
 			d = pickle.loads(val)
 			return d
 		else:
@@ -36,7 +38,7 @@ class Store(object):
 			# gen new id
 			key = ndb.Key(urlsafe=id)
 			shelf = key.get()
-			logging.info("write:shelf=" + str(shelf))
+			#logging.info("write:shelf=" + str(shelf))
 			if shelf == None:
 				shelf = GaeShelf()
 		else:
@@ -45,7 +47,7 @@ class Store(object):
 		s = pickle.dumps(d)
 		shelf.content = unicode(s)
 		id = shelf.put()
-		logging.debug('Dumped:' + repr(s))
+		#logging.debug('Dumped:' + repr(s))
 
 		return id.urlsafe()
 		

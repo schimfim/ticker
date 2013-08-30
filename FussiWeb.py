@@ -40,6 +40,7 @@ def view_ticker(mid=''):
 	if not mid:
 		# try cookie
 		mid = request.get_cookie("FussiTicker")
+		logging.info('Using cookie=' + str(mid))
 	# will be empty without cookie
 	t = None
 	if mid:

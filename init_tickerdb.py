@@ -8,8 +8,11 @@ conn = sqlite3.connect(dbname)
 c = conn.cursor()
 
 # Drop table
-c.execute('drop table shelf')
-
+try:
+	c.execute('drop table shelf')
+except:
+	logging.info('No table shelf, creating it.')
+	
 # Create table
 c.execute('create table shelf (key text, val text)')
 
