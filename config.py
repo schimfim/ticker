@@ -4,7 +4,7 @@
 from bottle import ConfigDict
 import re
  
-# Config
+#Config
 #config = ConfigDict()
 #config.read("app.cfg")
 #catchall = config.getboolean('bottle', 'catchall')
