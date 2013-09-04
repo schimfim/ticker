@@ -1,7 +1,19 @@
 tpl = '''
 <html><head>
-	<meta http-equiv="expires" content="10"/>
-	<meta http-equiv="refresh" content="10; URL=/{{mid}}" /> 
+
+	<script type="text/JavaScript">
+		var doReload = true;
+		
+		function reload() {
+		    if (doReload)
+		   	 window.location.href='/{{mid}}';
+		}
+		
+		function timedRefresh(t) {
+			setTimeout(reload, t);
+		}
+	</script>
+	
 			<style type="text/css">
 			body {background-color:green; font-family:sans-serif}
 			h1 { font-size:3cm; text-align:center; background-color:white;}
@@ -12,17 +24,18 @@ tpl = '''
 			td { border:10px solid white; vertical-align:center; align:center; overflow:hidden; font-size:3cm; font-weight:bold; background-color:green;}
 			input[type=submit].score {color:white; font-size:5cm;}
 			</style>
+			
 		</head>
-<body>
+<body onload="JavaScript:timedRefresh(3000);">
 	<h1>Fussi Ticker</h1>
-		<form action="/{{mid}}" method="POST">
+		<form action="/{{mid}}" name="theForm" method="POST">
 			<table>
 			<tr>
 			<td colspan=2 align="center">
 			%if running:
-				<input type="text" name="hteam" style="background-color:red"; value="{{hteam}}">
+				<input type="text" name="hteam" style="background-color:red"; value="{{hteam}}" onfocus="doReload=false" onblur="document.theForm.submit()">
 			%else:
-				<input type="text" name="hteam" value="{{hteam}}">
+				<input type="text" name="hteam" value="{{hteam}}" onfocus="doReload=false" onblur="document.theForm.submit()">
 			%end
 			</td>
 			</tr>
