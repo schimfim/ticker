@@ -23,7 +23,7 @@ def getFields(t=None):
 		# Returns dict with all disp. fields
 		list = FussiTicker.dbList()
 		# Get default
-		d = dict(mid='', mids=list, mail='')
+		d = dict(mid='', mids=list, base_url=base_url, mail='')
 		d.update(FussiTicker.newModel())
 		if t:
 			mid = t.id
@@ -67,13 +67,15 @@ def action(mid=''):
 	elif request.forms.guest_d:
 		t.scoreGuest(-1)
 	elif request.forms.new:
-		t.new()
+		# Start new session
+		response.delete_cookie("FussiTicker")
+		redirect('/')
+	elif request.forms.reset:
+		t.reset()
 	elif request.forms.start:
 		t.start()
-	elif request.forms.end:
-		t.end()
 	else:
-		logging.warning('Unknown action')
+		logging.warning('No action')
 	
 	t.setTeams(request.forms.hteam, 'na')
 	
