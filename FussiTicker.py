@@ -36,16 +36,14 @@ class Ticker(object):
 		score = self.d['guest']
 		self.d['guest'] = max(0, score+dir)
 		
-	def new(self):
+	def reset(self):
 		self.d['home'] = 0
 		self.d['guest'] = 0
 		self.d['running'] = False
 	
+	# Toggle running flag
 	def start(self):
-		self.d['running'] = True
-	
-	def end(self):
-		self.d['running'] = False
+		self.d['running'] = not self.d['running']
 	
 	def getModel(self):
 		return self.d
