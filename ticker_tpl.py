@@ -33,7 +33,7 @@ tpl = '''
 			<tr>
 			<td colspan=2 align="center">
 			%if running:
-				<input type="text" name="hteam" style="background-color:red"; value="{{hteam}}" onfocus="doReload=false" onblur="document.theForm.submit()">
+				<input type="text" name="hteam" style="background-color:red" value="{{hteam}}" onfocus="doReload=false" onblur="document.theForm.submit()">
 			%else:
 				<input type="text" name="hteam" value="{{hteam}}" onfocus="doReload=false" onblur="document.theForm.submit()">
 			%end
@@ -51,14 +51,24 @@ tpl = '''
 		<br>
 		<table>
 			<tr>
-			<td><input type="submit" name="new" value="New"></td>
-			<td><input type="submit" name="start" value="Start"></td>
-			<td><input type="submit" name="end" value="End"></td>
+			%if running:
+				<td style="background-color:red">
+				<input type="submit" name="start" value="Stop">
+				</td>
+			%else:
+				<td>
+				<input type="submit" name="start" value="Start">
+				</td>
+			%end
 			</tr>
 			
+			<td><input type="submit" name="reset" value="Reset"></td>
+			<td><input type="submit" name="new" value="New"></td>
+
 			</table>
 		</form>
 		<p><a href="{{mail}}">Share this Ticker</a></p>
+		
 </body></html>
 '''
 
