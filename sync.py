@@ -8,6 +8,7 @@ files = [
 	'init_tickerdb.py',
 	'store.py',
 	'store_sqlite.py',
+	'store_ndb.py',
 	'store_test.py',
 	'sync.py',
 	'ticker_tpl.py',
