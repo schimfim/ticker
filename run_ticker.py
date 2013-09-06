@@ -3,7 +3,6 @@ import webbrowser
 from FussiWeb import app
 import bottle
 import time
-import threading
 
 # Run the browser
 # This should go in a separate script!!!
@@ -11,6 +10,4 @@ webbrowser.open(base_url, **web_opts)
 
 # Run the app
 bottle.run(app=app, **run_opts)
-
-print threading.enumerate()
 
