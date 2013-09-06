@@ -26,7 +26,7 @@ tpl = '''
 			</style>
 			
 		</head>
-<body onload="JavaScript:timedRefresh(3000);">
+<body onload="JavaScript:timedRefresh({{refresh}});">
 	<h1>Fussi Ticker</h1>
 		<form action="/{{mid}}" name="theForm" method="POST">
 			<table>
@@ -60,14 +60,16 @@ tpl = '''
 				<input type="submit" name="start" value="Start">
 				</td>
 			%end
-			</tr>
 			
-			<td><input type="submit" name="reset" value="Reset"></td>
-			<td><input type="submit" name="new" value="New"></td>
-
+			<td><input type="submit" name="reset" value="Neu"></td>
+			
+			</tr>
 			</table>
 		</form>
-		<p><a href="{{mail}}">Share this Ticker</a></p>
+		%if not mid:
+			<p><a href="{{base_url}}/{{cookie}}">Verwende den Ticker vom letzten Mal</a></p>
+		%end
+		<p><a href="{{mail}}">Teile diesen Ticker</a></p>
 		
 </body></html>
 '''
@@ -77,8 +79,8 @@ with open('ticker.tpl','w') as f:
 	f.write(tpl)
 
 # verify
-with open('ticker.tpl') as f:
-	a = f.read()
+#with open('ticker.tpl') as f:
+#	a = f.read()
 #	print a
 	
 
