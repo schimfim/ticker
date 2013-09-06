@@ -1,21 +1,21 @@
 # FussiWeb
 
 import logging
-logging.basicConfig(level=logging.INFO)
 
 from bottle import Bottle, route, post, template, request, response, debug, error, view, redirect
 
 import FussiTicker
+import config
 from config import run_opts, base_url
 
-debug(True)
+debug(config.debug)
 
 # App
-app = Bottle()
+app = Bottle(config.catchall)
 
 # Generate mailto link
 def mailto(mid):
-	base = 'mailto:?subject=Follow%20my%20Ticker'
+	base = 'mailto:?subject=Folge%20meinem%20Ticker'
 	body = '&body=<a>{url}/{id}</a>'.format(url=base_url, id=mid)
 	return base + body
 
@@ -23,7 +23,7 @@ def getFields(t=None):
 		# Returns dict with all disp. fields
 		list = FussiTicker.dbList()
 		# Get default
-		d = dict(mid='', mids=list, base_url=base_url, mail='')
+		d = dict(mid='', mids=list, base_url=base_url, mail='', cookie='', refresh=config.refresh)
 		d.update(FussiTicker.newModel())
 		if t:
 			mid = t.id
@@ -37,15 +37,17 @@ def getFields(t=None):
 @app.route('/<mid>')
 @view('ticker')
 def view_ticker(mid=''):
+	cookie = ''
 	if not mid:
-		# try cookie
-		mid = request.get_cookie("FussiTicker")
-		logging.info('Using cookie=' + str(mid))
+		# get cookie from last time
+		cookie = request.get_cookie("FussiTicker")
+		logging.info('Found cookie=' + str(cookie))
 	# will be empty without cookie
 	t = None
 	if mid:
 		t = FussiTicker.load(mid)
 	d = getFields(t)
+	d.update(cookie=cookie)
 	return d
 
 # Update ticker
@@ -68,6 +70,7 @@ def action(mid=''):
 		t.scoreGuest(-1)
 	elif request.forms.new:
 		# Start new session
+		# Not used
 		response.delete_cookie("FussiTicker")
 		redirect('/')
 	elif request.forms.reset:
@@ -91,6 +94,10 @@ def action(mid=''):
 def delete(mid):
 	FussiTicker.delete(mid)
 	redirect('/')
+
+@app.route('/stop')
+def shutdown():
+	Bottle.close()
 
 # Error handlers
 @error(405)
