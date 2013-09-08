@@ -10,7 +10,8 @@ tpl = '''
 		}
 		
 		function timedRefresh(t) {
-			setTimeout(reload, t);
+			if (t > 0)
+				setTimeout(reload, t);
 		}
 	</script>
 	

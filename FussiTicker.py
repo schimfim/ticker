@@ -3,10 +3,7 @@
 # v2
 
 import logging
-from config import ticks, mode
-
-logging.basicConfig(level=logging.INFO)
-logging.info('ticker mode=' + mode)
+from config import mode, store
 
 def newModel():
 	# Get defaults
@@ -53,6 +50,7 @@ class Ticker(object):
 # store.Store
 # Sets t.id to id returned from db
 def save(t):
+	ticks = store.Store()
 	ticks.open('ticker.db')
 	d = t.getModel()
 	t.id = ticks.write(t.id, d)
@@ -61,6 +59,7 @@ def save(t):
 def load(id):
 	# Reads object with if from db. If not
 	# found, returns new object
+	ticks = store.Store()
 	ticks.open('ticker.db')
 	d = ticks.read(id)
 	ticks.close()
@@ -71,6 +70,7 @@ def load(id):
 	return t
 
 def dbList():
+	ticks = store.Store()
 	ticks.open('ticker.db')
 	l = ticks.list()
 	ticks.close()

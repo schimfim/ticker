@@ -41,7 +41,7 @@ def view_ticker(mid=''):
 	if not mid:
 		# get cookie from last time
 		cookie = request.get_cookie("FussiTicker")
-		logging.info('Found cookie=' + str(cookie))
+		logging.debug('cookie ' + str(cookie))
 	# will be empty without cookie
 	t = None
 	if mid:
@@ -61,29 +61,35 @@ def action(mid=''):
 		t = FussiTicker.load(mid)
 	# process action
 	if request.forms.home_u:
+		logging.debug('scoreHome')
 		t.scoreHome()
 	elif request.forms.home_d:
+		logging.debug('scoreHome')
 		t.scoreHome(-1)
 	elif request.forms.guest_u:
+		logging.debug('scoreGuest')
 		t.scoreGuest()
 	elif request.forms.guest_d:
+		logging.debug('scoreGuest')
 		t.scoreGuest(-1)
 	elif request.forms.new:
 		# Start new session
 		# Not used
+		logging.debug('forms.new')
 		response.delete_cookie("FussiTicker")
 		redirect('/')
 	elif request.forms.reset:
+		logging.debug('reset')
 		t.reset()
 	elif request.forms.start:
+		logging.debug('start')
 		t.start()
 	else:
-		logging.warning('No action')
+		logging.debug('No action')
 	
 	t.setTeams(request.forms.hteam, 'na')
 	
 	FussiTicker.save(t)
-	logging.info('New id:' + str(t.id))
 	response.set_cookie("FussiTicker", t.id)
 	d = getFields(t)
 	
