@@ -37,6 +37,7 @@ def getFields(t=None):
 @app.route('/<mid>')
 @view('ticker')
 def view_ticker(mid=''):
+	response.set_header('cache-control', 'no-cache')
 	cookie = ''
 	if not mid:
 		# get cookie from last time
@@ -48,12 +49,14 @@ def view_ticker(mid=''):
 		t = FussiTicker.load(mid)
 	d = getFields(t)
 	d.update(cookie=cookie)
+
 	return d
 
 # Update ticker
 @app.post('/')
 @app.post('/<mid>')
 def action(mid=''):
+	response.set_header('cache-control', 'no-cache')
 	if not mid:
 		# generate new ticker
 		t = FussiTicker.Ticker()
@@ -92,7 +95,7 @@ def action(mid=''):
 	FussiTicker.save(t)
 	response.set_cookie("FussiTicker", t.id)
 	d = getFields(t)
-	
+
 	return template('ticker', d)
 
 # Delete mid
