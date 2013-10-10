@@ -4,6 +4,7 @@ import pickle
 import random
 
 import logging
+logging.basicConfig(level=logging.INFO)
 
 # SQLite implementation
 class Store(object):
