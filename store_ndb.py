@@ -3,6 +3,7 @@ from google.appengine.ext import ndb
 import pickle
 
 import logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Google NDB implementation
 
@@ -16,26 +17,28 @@ class Store(object):
 		
 	def open(self, name):
 		self.db = GaeShelf()
+		# self.db.text_factory = str -> from SQLite
 		
 	def read(self, id):
-		logging.debug('read ID ' + str(id))
+		logging.info('ENTER: read ID ' + str(id))
 		try:
 			key = ndb.Key(urlsafe=id)
 			obj = key.get()
 		except: return None
 		if obj:
 			val = str(obj.content)
+			#logging.info('Read:' + val)
 			d = pickle.loads(val)
-			logging.debug('read VAL ' + str(d))
 			return d
 		else:
 			return None
 		
 	def write(self, id, d):
 		if id!= None:
-			logging.debug('write ID ' + str(id))
+			# gen new id
 			key = ndb.Key(urlsafe=id)
 			shelf = key.get()
+			#logging.info("write:shelf=" + str(shelf))
 			if shelf == None:
 				shelf = GaeShelf()
 		else:
@@ -44,7 +47,7 @@ class Store(object):
 		s = pickle.dumps(d)
 		shelf.content = unicode(s)
 		id = shelf.put()
-		logging.debug('write VAL ' + str(d))
+		#logging.debug('Dumped:' + repr(s))
 
 		return id.urlsafe()
 		
