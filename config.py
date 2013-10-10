@@ -4,7 +4,7 @@
 from bottle import ConfigDict
 import re
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
  
 #Config
 #config = ConfigDict()
@@ -43,7 +43,7 @@ elif mode == 'appengine':
 	run_opts = {'server':'gae'}
 	web_opts = {}
 	refresh = 10000
-	debug = True
+	debug = False
 	catchall=True 
 else: 
 	raise ValueError('Unknown mode: {}'.format(mode))
@@ -51,6 +51,6 @@ else:
 
 
 # 
-# ticks = store.Store()
+ticks = store.Store()
 base_url = 'http://' + ahost + ':' + str(aport)
 
